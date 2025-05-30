@@ -1,0 +1,10 @@
+Debtor,Creditor,Amount
+Gabe,Bob,30
+Gabe,David,10
+Fred,Bob,10
+Fred,Charlie,30
+Fred,David,10
+Fred,Ema,10
+Bob,Charlie,40
+Charlie,David,20
+David,Ema,50
