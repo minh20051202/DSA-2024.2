@@ -172,10 +172,12 @@ class DynamicProgrammingSimplifier:
                 2. Tuple[float, int]: (chi_phí_tài_chính_bước_này, số_giao_dịch_bước_này)
                 3. HashTable[str, float]: trạng thái số dư cập nhật sau thanh toán
         """
+        # Khởi tạo các cấu trúc dữ liệu
         temp_simplified_tx_list = LinkedList[BasicTransaction]()
+        balances_after_settlement = HashTable[str, float]()
         financial_cost = 0.0
         num_tx_this_step = 0
-
+        
         # Tạo bản sao cô lập để ngăn thay đổi trạng thái
         balances_after_settlement = self._deep_copy_balances_map(current_balances_map)
 
@@ -205,7 +207,7 @@ class DynamicProgrammingSimplifier:
                     creditors_pq.enqueue(Tuple([person_name, balance]), balance)
                 # Bỏ qua những người tham gia có số dư gần bằng không (đã thanh toán)
                 current_person_node = current_person_node.next
-
+        
         # Vòng lặp thanh toán tham lam: ghép các khoản nợ lớn nhất với tín dụng lớn nhất
         while not debtors_pq.is_empty() and not creditors_pq.is_empty():
             # Trích xuất người nợ và người cho vay có ưu tiên cao nhất
@@ -218,8 +220,8 @@ class DynamicProgrammingSimplifier:
             creditor_balance_positive = creditor_info_tuple[1]
             
             # Tính toán số tiền thanh toán tối ưu (bị giới hạn bởi số tiền nhỏ hơn của nợ/tín dụng)
-            amount_to_settle = min(abs(debtor_balance_negative), creditor_balance_positive)
-
+            amount_to_settle = round_money(min(abs(debtor_balance_negative), creditor_balance_positive))
+            
             # Chỉ tạo giao dịch nếu số tiền có ý nghĩa
             if amount_to_settle > EPSILON:
                 new_transaction = BasicTransaction(
@@ -232,8 +234,8 @@ class DynamicProgrammingSimplifier:
                 num_tx_this_step += 1
 
                 # Cập nhật số dư sau thanh toán
-                updated_debtor_balance = debtor_balance_negative + amount_to_settle
-                updated_creditor_balance = creditor_balance_positive - amount_to_settle
+                updated_debtor_balance = round_money(debtor_balance_negative + amount_to_settle)
+                updated_creditor_balance = round_money(creditor_balance_positive - amount_to_settle)
 
                 balances_after_settlement.put(debtor_name, updated_debtor_balance)
                 balances_after_settlement.put(creditor_name, updated_creditor_balance)
