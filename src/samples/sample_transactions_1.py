@@ -9,7 +9,7 @@ from src.utils.money_utils import round_money
 def create_sample_transactions_1() -> LinkedList[Transaction]:
     """Create a list of sample transactions for testing."""
     transactions = LinkedList[Transaction]()
-    
+
     # Test case 1: Simple transactions
     transactions.append(Transaction(
         debtor="Alice",
@@ -71,7 +71,7 @@ def create_sample_transactions_1() -> LinkedList[Transaction]:
         borrow_date=date(2024, 1, 1),
         due_date=date(2024, 1, 9)
     ))
-    
+
     return transactions
 
 if __name__ == '__main__':

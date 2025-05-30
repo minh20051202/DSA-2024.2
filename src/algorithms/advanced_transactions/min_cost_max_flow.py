@@ -362,7 +362,7 @@ class AdvancedMinCostMaxFlowSimplifier:
             for j in range(len(creditors)):
                 if debtor_amount <= 0:
                     break
-                    
+
                 creditor = creditors.get(j)
                 creditor_amount = balances.get(creditor)
                 if creditor_amount <= 0:

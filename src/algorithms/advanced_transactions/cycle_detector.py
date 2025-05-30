@@ -130,7 +130,7 @@ class AdvancedDebtCycleSimplifier:
                 creditor_amount = balances.get(creditor)
                 if creditor_amount <= 0:
                     continue
-                
+
                 transfer_amount = min(debtor_amount, creditor_amount)
                 if transfer_amount > 0:
                     # Calculate weighted average interest rate and dates
@@ -193,6 +193,6 @@ class AdvancedDebtCycleSimplifier:
                     break
             if not is_in_cycle:
                 simplified_transactions.append(tx)
-        
+
         self.simplified_transactions = simplified_transactions
         return self.simplified_transactions 

@@ -4,7 +4,8 @@ from __future__ import annotations
 from src.data_structures import LinkedList, HashTable, Graph, GraphEdge, Tuple
 from src.core_types import BasicTransaction
 from src.utils.sorting import merge_sort_linked_list
-from src.utils.constants import EPSILON, round_money
+from src.utils.constants import EPSILON
+from src.utils.money_utils import round_money
 
 class MinCostMaxFlowSimplifier:
     """

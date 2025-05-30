@@ -133,4 +133,4 @@ class AdvancedGreedySimplifier:
             simplified_transactions.append(simplified.get(i))
         
         self.simplified_transactions = simplified_transactions
-        return self.simplified_transactions 
+        return self.simplified_transactions
