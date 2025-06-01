@@ -1,5 +1,4 @@
 # Thuật toán Tham lam cho Đơn giản hóa Nợ
-# Debt Simplification using Greedy Algorithm
 from __future__ import annotations
 
 from src.core_types import BasicTransaction
@@ -29,7 +28,7 @@ class GreedySimplifier:
         """
         Khởi tạo bộ đơn giản hóa nợ với danh sách giao dịch ban đầu.
         
-        Args:
+        Tham số:
             transactions: Danh sách liên kết các giao dịch cơ bản cần đơn giản hóa
         """
         self.initial_transactions = transactions  # Lưu trữ giao dịch gốc để tham chiếu
@@ -70,7 +69,7 @@ class GreedySimplifier:
         4. Ghép đôi và tạo giao dịch thanh toán tối ưu
         5. Cập nhật số dư và tiếp tục cho đến khi hết
         
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch đã được đơn giản hóa
         """
         # Điều kiện dừng: nếu không có giao dịch nào thì trả về danh sách rỗng

@@ -1,6 +1,6 @@
 """
-Debt Simplification Algorithm Package
+Gói Thuật Toán Đơn Giản Hóa Nợ
 
-This package provides implementations of various algorithms for simplifying debts
-in a group of people, minimizing the number of transactions needed to settle all debts.
+Gói này cung cấp các triển khai của nhiều thuật toán khác nhau để đơn giản hóa nợ
+trong một nhóm người, tối thiểu hóa số lượng giao dịch cần thiết để thanh toán tất cả các khoản nợ.
 """ 

@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
-
 """
-Triển khai Array (Mảng) tùy chỉnh cho Dự án Đơn giản hóa Nợ.
+Triển khai Array (Mảng động)
 """
 
 from typing import TypeVar, Generic, Iterator
@@ -9,7 +7,23 @@ from typing import TypeVar, Generic, Iterator
 T = TypeVar('T')
 
 class Array(Generic[T]):
-    """Triển khai một mảng cơ bản với khả năng thay đổi kích thước động."""
+    """
+    ARRAY - MẢNG ĐỘNG
+    
+    Cấu trúc dữ liệu mảng với khả năng thay đổi kích thước động.
+    Sử dụng list nội bộ để lưu trữ dữ liệu và tự động mở rộng khi cần thiết.
+    
+    PHƯƠNG THỨC:
+    - __init__(capacity): Khởi tạo mảng với dung lượng ban đầu - O(1)
+    - get(index): Lấy phần tử tại vị trí index - O(1)
+    - set(index, value): Đặt giá trị tại vị trí index - O(1)
+    - append(value): Thêm phần tử vào cuối mảng - O(1) trung bình, O(n) worst case
+    - insert(index, value): Chèn phần tử tại vị trí index - O(n)
+    - pop(index): Xóa và trả về phần tử tại vị trí index - O(n)
+    - copy(): Tạo bản sao nông của mảng - O(n)
+    - _resize(): Tự động tăng dung lượng mảng - O(n)
+    """
+    
     def __init__(self, capacity: int = 10):
         """
         Khởi tạo một mảng mới với dung lượng cho trước.
@@ -25,15 +39,6 @@ class Array(Generic[T]):
         # Điều này là một chi tiết triển khai; người dùng Array sẽ không tương tác trực tiếp với nó.
         # Mục tiêu là thay thế việc sử dụng list của Python ở các lớp cấp cao hơn bằng Array này.
         self._internal_data: list[T | None] = [None] * capacity
-
-    def __len__(self) -> int:
-        """
-        Lấy độ dài của mảng (số lượng phần tử hiện có).
-
-        Trả về:
-            int: Số lượng phần tử trong mảng.
-        """
-        return self.size
 
     def get(self, index: int) -> T:
         """
@@ -88,53 +93,6 @@ class Array(Generic[T]):
             self._resize()
         self._internal_data[self.size] = value
         self.size += 1
-
-    def _resize(self) -> None:
-        """Gấp đôi dung lượng của mảng. Nếu dung lượng là 0, đặt thành 1."""
-        old_internal_data = self._internal_data
-        new_capacity = self.capacity * 2 if self.capacity > 0 else 1
-        self.capacity = new_capacity
-        self._internal_data = [None] * self.capacity
-        for i in range(self.size):
-            self._internal_data[i] = old_internal_data[i]
-
-    def copy(self) -> 'Array[T]':
-        """
-        Tạo một bản sao nông (shallow copy) của mảng.
-
-        Trả về:
-            Array[T]: Một mảng mới với các phần tử tương tự.
-        """
-        new_array = Array[T](self.capacity)
-        new_array.size = self.size
-        for i in range(self.size):
-            new_array._internal_data[i] = self._internal_data[i]
-        return new_array
-
-    def __str__(self) -> str:
-        """Trả về biểu diễn chuỗi của mảng, ví dụ: '[1, 2, 3]'."""
-        if self.size == 0:
-            return "[]"
-        items_str = []
-        for i in range(self.size):
-            items_str.append(str(self._internal_data[i]))
-        return "[" + ", ".join(items_str) + "]"
-
-    def __repr__(self) -> str:
-        """Trả về biểu diễn chuỗi chính thức của mảng, ví dụ: 'Array([1, 2, 3], capacity=10)'."""
-        # Lấy các phần tử thực tế để hiển thị
-        items_repr_list = []
-        for i in range(self.size):
-            items_repr_list.append(repr(self._internal_data[i]))
-        items_part = "[" + ", ".join(items_repr_list) + "]"
-        return f"Array({items_part}, size={self.size}, capacity={self.capacity})"
-
-    def __iter__(self) -> Iterator[T]:
-        """Trả về một iterator cho các phần tử trong mảng."""
-        for i in range(self.size):
-            # Giả định get(i) sẽ trả về T. Nếu get(i) có thể trả về None không phải T,
-            # thì cần xử lý type ở đây hoặc đảm bảo get(i) luôn đúng.
-            yield self.get(i)
 
     def insert(self, index: int, value: T) -> None:
         """
@@ -192,4 +150,42 @@ class Array(Generic[T]):
         
         self._internal_data[self.size - 1] = None # Xóa tham chiếu ở vị trí cuối cũ
         self.size -= 1
-        return value_to_pop 
+        return value_to_pop
+
+    def copy(self) -> 'Array[T]':
+        """
+        Tạo một bản sao nông (shallow copy) của mảng.
+
+        Trả về:
+            Array[T]: Một mảng mới với các phần tử tương tự.
+        """
+        new_array = Array[T](self.capacity)
+        new_array.size = self.size
+        for i in range(self.size):
+            new_array._internal_data[i] = self._internal_data[i]
+        return new_array
+
+    def _resize(self) -> None:
+        """Gấp đôi dung lượng của mảng. Nếu dung lượng là 0, đặt thành 1."""
+        old_internal_data = self._internal_data
+        new_capacity = self.capacity * 2 if self.capacity > 0 else 1
+        self.capacity = new_capacity
+        self._internal_data = [None] * self.capacity
+        for i in range(self.size):
+            self._internal_data[i] = old_internal_data[i]
+
+    def __len__(self) -> int:
+        """
+        Lấy độ dài của mảng (số lượng phần tử hiện có).
+
+        Trả về:
+            int: Số lượng phần tử trong mảng.
+        """
+        return self.size
+
+    def __iter__(self) -> Iterator[T]:
+        """Trả về một iterator cho các phần tử trong mảng."""
+        for i in range(self.size):
+            # Giả định get(i) sẽ trả về T. Nếu get(i) có thể trả về None không phải T,
+            # thì cần xử lý type ở đây hoặc đảm bảo get(i) luôn đúng.
+            yield self.get(i)

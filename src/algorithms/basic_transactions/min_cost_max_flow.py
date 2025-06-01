@@ -1,5 +1,4 @@
 # Thuật toán Min-Cost Max-Flow cho Đơn giản hóa Nợ
-# Min-Cost Max-Flow Algorithm for Debt Simplification
 from __future__ import annotations
 from src.data_structures import LinkedList, HashTable, Graph, GraphEdge, Tuple
 from src.core_types import BasicTransaction
@@ -34,7 +33,7 @@ class MinCostMaxFlowSimplifier:
         """
         Khởi tạo bộ đơn giản hóa Min-Cost Max-Flow với danh sách giao dịch ban đầu.
         
-        Args:
+        Tham số:
             transactions: Danh sách liên kết các giao dịch cơ bản cần đơn giản hóa
         """
         self.initial_transactions = transactions              # Lưu trữ giao dịch gốc để tham chiếu
@@ -156,7 +155,7 @@ class MinCostMaxFlowSimplifier:
         """
         Thêm cạnh thuận và cạnh ngược cho mạng luồng (theo yêu cầu của thuật toán flow).
         
-        Args:
+        Tham số:
             from_node: Đỉnh nguồn của cạnh
             to_node: Đỉnh đích của cạnh  
             capacity: Khả năng thông qua tối đa của cạnh
@@ -187,7 +186,7 @@ class MinCostMaxFlowSimplifier:
         Tìm đường đi ngắn nhất từ Source đến Sink bằng thuật toán SPFA.
         SPFA (Shortest Path Faster Algorithm) là cải tiến của Bellman-Ford.
         
-        Returns:
+        Trả về:
             Tuple chứa:
             - LinkedList[GraphEdge]: Danh sách các cạnh tạo thành đường đi ngắn nhất
             - float: Khả năng luồng tối thiểu trên đường đi (bottleneck capacity)
@@ -292,7 +291,7 @@ class MinCostMaxFlowSimplifier:
         5. Lặp lại cho đến khi không còn đường tăng luồng
         6. Trích xuất giao dịch từ luồng cuối cùng
         
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch đã được đơn giản hóa
         """
         # Điều kiện dừng: nếu không có giao dịch nào thì trả về danh sách rỗng
@@ -346,7 +345,7 @@ class MinCostMaxFlowSimplifier:
         2. Với mỗi đỉnh, xét các cạnh có luồng dương
         3. Tạo giao dịch từ luồng trên cạnh
         
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch được trích xuất
         """
         transactions = LinkedList[BasicTransaction]()

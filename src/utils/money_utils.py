@@ -1,11 +1,11 @@
 def round_money(amount: float) -> float:
     """
-    Round a money amount to 2 decimal places.
+    Làm tròn một số tiền đến 2 chữ số thập phân.
     
     Args:
-        amount (float): The amount to round
+        amount (float): Số tiền cần làm tròn
         
     Returns:
-        float: The rounded amount with 2 decimal places
+        float: Số tiền đã được làm tròn với 2 chữ số thập phân
     """
     return round(amount, 2) 

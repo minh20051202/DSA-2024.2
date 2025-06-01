@@ -9,43 +9,43 @@ from src.data_structures.linked_list import LinkedList
 
 class Person:
     """
-    Represents a person (individual or entity) involved in debt transactions.
-    Stores name, aggregated balance, and can reference related transactions.
-    Attributes like earliest_due_date and highest_interest_rate are used for prioritization algorithms.
+    Đại diện cho một người (cá nhân hoặc tổ chức) tham gia vào các giao dịch nợ.
+    Lưu trữ tên, số dư tổng hợp, và có thể tham chiếu đến các giao dịch liên quan.
+    Các thuộc tính như earliest_due_date và highest_interest_rate được sử dụng cho các thuật toán ưu tiên.
     """
     def __init__(self, name: str):
         self.name: str = name
-        self.balance: float = 0.0 # Aggregated balance of this person, updated by simplification algorithms.
-                                  # Negative balance means debt, positive means credit.
+        self.balance: float = 0.0 # Số dư tổng hợp của người này, được cập nhật bởi các thuật toán đơn giản hóa.
+                                  # Số dư âm nghĩa là nợ, số dư dương nghĩa là có.
         
-        # Use string 'LinkedList[AdvancedTransaction]' for type hint to avoid circular import.
-        # Will be initialized with a real LinkedList object when needed.
+        # Sử dụng chuỗi 'LinkedList[AdvancedTransaction]' cho type hint để tránh import vòng.
+        # Sẽ được khởi tạo với một đối tượng LinkedList thực khi cần.
         self.transactions: 'LinkedList[AdvancedTransaction]' | None = None
-        self.earliest_due_date: date | None = None # Earliest due date of this person's DEBTS.
-        self.highest_interest_rate: float = 0.0 # Highest interest rate of this person's DEBTS.
+        self.earliest_due_date: date | None = None # Ngày đến hạn sớm nhất của các khoản NỢ của người này.
+        self.highest_interest_rate: float = 0.0 # Lãi suất cao nhất của các khoản NỢ của người này.
 
     def __str__(self) -> str:
-        """Returns a friendly string representation of the Person object."""
+        """Trả về biểu diễn chuỗi thân thiện của đối tượng Person."""
         return f"Person: {self.name}, Balance: {self.balance:.2f}"
 
     def __repr__(self) -> str:
-        """Returns an official string representation of the Person object."""
+        """Trả về biểu diễn chuỗi chính thức của đối tượng Person."""
         return f"Person(name='{self.name}')"
 
     def add_transaction_reference(self, transaction: AdvancedTransaction) -> None:
-        """Adds a reference to a transaction related to this person.
-        If this person is the DEBTOR in the transaction, update earliest_due_date and highest_interest_rate.
+        """Thêm tham chiếu đến một giao dịch liên quan đến người này.
+        Nếu người này là NGƯỜI MẮC NỢ trong giao dịch, cập nhật earliest_due_date và highest_interest_rate.
         """
-        # Import LinkedList here to avoid module-level circular dependency.
+        # Import LinkedList ở đây để tránh phụ thuộc vòng ở mức module.
         from src.data_structures.linked_list import LinkedList
 
-        if self.transactions is None: # Initialize LinkedList if it doesn't exist
+        if self.transactions is None: # Khởi tạo LinkedList nếu nó chưa tồn tại
             self.transactions = LinkedList[AdvancedTransaction]()
         
-        # Currently, Person.transactions is not heavily used in the main logic after creation,
-        # but kept for potential extensions or debugging.
+        # Hiện tại, Person.transactions không được sử dụng nhiều trong logic chính sau khi tạo,
+        # nhưng được giữ lại cho các mở rộng tiềm năng hoặc gỡ lỗi.
 
-        # Update information only if this person is the DEBTOR in the transaction.
+        # Chỉ cập nhật thông tin nếu người này là NGƯỜI MẮC NỢ trong giao dịch.
         if transaction.debtor == self.name:
             if self.earliest_due_date is None or transaction.due_date < self.earliest_due_date:
                 self.earliest_due_date = transaction.due_date
@@ -54,7 +54,7 @@ class Person:
                 self.highest_interest_rate = transaction.interest_rate
 
     def update_balance(self, amount: float) -> None:
-        """Updates the person's balance.
-        `amount`: the amount to change the balance by (positive to increase, negative to decrease).
+        """Cập nhật số dư của người này.
+        `amount`: số tiền để thay đổi số dư (dương để tăng, âm để giảm).
         """
         self.balance += amount 

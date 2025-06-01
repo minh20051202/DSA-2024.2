@@ -1,10 +1,9 @@
 # Thuật toán Đơn giản hóa Nợ bằng Loại bỏ Chu trình
-# Debt Cycle Simplification Algorithm
 from __future__ import annotations
 
 from src.core_types import BasicTransaction
 from src.data_structures import LinkedList, Graph, HashTable, Array, Tuple
-from src.utils.sorting import merge_sort_array, merge_sort_linked_list
+from src.utils.sorting import merge_sort_array
 from src.utils.constants import EPSILON
 from src.utils.money_utils import round_money
 
@@ -34,7 +33,7 @@ class DebtCycleSimplifier:
         """
         Khởi tạo bộ đơn giản hóa nợ với danh sách giao dịch ban đầu.
         
-        Args:
+        Tham số:
             transactions: Danh sách liên kết các giao dịch cơ bản cần đơn giản hóa
         """
         self.initial_transactions: LinkedList[BasicTransaction] = transactions
@@ -49,10 +48,10 @@ class DebtCycleSimplifier:
         - Cạnh có hướng (directed edge): từ người nợ đến người cho vay
         - Trọng số của cạnh: số tiền nợ (BasicTransaction object)
         
-        Args:
+        Tham số:
             tx_array: Mảng các giao dịch cần xây dựng đồ thị
             
-        Returns:
+        Trả về:
             Graph[str, BasicTransaction]: Đồ thị nợ có hướng với trọng số
         """
         debt_graph = Graph[str, BasicTransaction](is_directed=True)
@@ -73,10 +72,10 @@ class DebtCycleSimplifier:
         - Ưu tiên 1: Số lượng giao dịch sẽ được loại bỏ hoàn toàn sau khi áp dụng chu trình
         - Ưu tiên 2: Số tiền nhỏ nhất trong chu trình (số tiền có thể loại bỏ)
         
-        Args:
+        Tham số:
             cycle_edges: Danh sách các cạnh tạo thành chu trình
             
-        Returns:
+        Trả về:
             Tuple: (số_giao_dịch_được_loại_bỏ, số_tiền_nhỏ_nhất) hoặc (-1, 0.0) nếu không hợp lệ
         """
         # Kiểm tra điều kiện chu trình tối thiểu (ít nhất 2 cạnh)
@@ -121,10 +120,10 @@ class DebtCycleSimplifier:
         3. Lọc ra các chu trình có lợi (điểm > 0)
         4. Sắp xếp theo độ ưu tiên giảm dần
         
-        Args:
+        Tham số:
             debt_graph: Đồ thị nợ có hướng cần tìm chu trình
             
-        Returns:
+        Trả về:
             LinkedList[Tuple]: Danh sách chu trình có lợi đã sắp xếp
                              Mỗi phần tử: (score_tuple, cycle_edges, min_amount)
         """
@@ -157,10 +156,10 @@ class DebtCycleSimplifier:
         1. Số giao dịch được loại bỏ (giảm dần) - ưu tiên cao nhất
         2. Số tiền có thể loại bỏ (tăng dần) - ưu tiên thứ hai
         
-        Args:
+        Tham số:
             cycles: Danh sách chu trình cần sắp xếp
             
-        Returns:
+        Trả về:
             LinkedList[Tuple]: Danh sách chu trình đã được sắp xếp theo độ ưu tiên
         """
         cycles_array = Array()
@@ -171,7 +170,7 @@ class DebtCycleSimplifier:
             """
             Hàm so sánh hai chu trình để xác định thứ tự ưu tiên.
             
-            Returns:
+            Trả về:
                 bool: True nếu cycle1 có độ ưu tiên cao hơn cycle2
             """
             score1 = cycle1[0]
@@ -203,11 +202,11 @@ class DebtCycleSimplifier:
         2. Loại bỏ các giao dịch có số tiền <= EPSILON (giao dịch đã được thanh toán)
         3. Trả về danh sách giao dịch còn lại
         
-        Args:
+        Tham số:
             cycle_edges: Danh sách các cạnh trong chu trình cần loại bỏ
             min_amount: Số tiền nhỏ nhất trong chu trình (số tiền được loại bỏ)
             
-        Returns:
+        Trả về:
             Array[BasicTransaction]: Danh sách giao dịch sau khi áp dụng loại bỏ chu trình
         """
         # Cập nhật số tiền cho các giao dịch trong chu trình
@@ -234,10 +233,10 @@ class DebtCycleSimplifier:
         3. Sử dụng thuật toán matching tham lam để ghép đôi tối ưu
         4. Tạo ra số lượng giao dịch tối thiểu để cân bằng tất cả số dư
         
-        Args:
+        Tham số:
             tx_array: Mảng các giao dịch cần thực hiện net settlement
             
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch tối ưu sau net settlement
         """
         # Tính số dư ròng
@@ -318,7 +317,7 @@ class DebtCycleSimplifier:
         1. Tính số dư ròng cho tất cả người tham gia
         2. Sử dụng thuật toán matching tham lam để tạo giao dịch tối thiểu
         
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch đã được đơn giản hóa tối ưu
         """
         if self.initial_transactions.is_empty():

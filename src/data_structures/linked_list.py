@@ -1,77 +1,147 @@
-from typing import Generic, TypeVar, Iterable
+"""
+Triển khai Linked List (Danh sách liên kết đơn)
+"""
 
-# Biến kiểu cho LinkedList dùng chung (generic)
+from typing import Generic, TypeVar, Iterable, Iterator
+
 T = TypeVar('T')
 
 class Node(Generic[T]):
-    """Nút (Node) cho Danh sách Liên kết (LinkedList)."""
+    """
+    Node cho Linked List - đại diện cho một nút trong danh sách liên kết.
+    
+    Mỗi node chứa dữ liệu và con trỏ tới node tiếp theo trong danh sách.
+    """
+    
     def __init__(self, data: T):
+        """
+        Khởi tạo một node mới với dữ liệu cho trước.
+        
+        Tham số:
+            data (T): Dữ liệu được lưu trữ trong node.
+        """
         self.data: T = data
         self.next: Node[T] | None = None
 
-    def __str__(self) -> str:
-        return str(self.data)
-
 class LinkedList(Generic[T]):
-    """Triển khai cấu trúc dữ liệu Danh sách Liên kết (LinkedList) tự tạo."""
+    """
+    LINKED LIST - DANH SÁCH LIÊN KẾT ĐƠN
+    
+    PHƯƠNG THỨC:
+    - __init__(initial_data): Khởi tạo danh sách - O(n) nếu có initial_data, O(1) nếu không
+    - append(data): Thêm phần tử vào cuối danh sách - O(1)
+    - prepend(data): Thêm phần tử vào đầu danh sách - O(1)
+    - remove_first(): Xóa và trả về phần tử đầu tiên - O(1)
+    - remove_last(): Xóa và trả về phần tử cuối cùng - O(n)
+    - remove_by_value(data): Xóa phần tử đầu tiên có giá trị data - O(n)
+    - remove_at_index(index): Xóa phần tử tại vị trí index - O(n)
+    - get_at_index(index): Lấy phần tử tại vị trí index - O(n)
+    - get_node_at_index(index): Lấy node tại vị trí index - O(n)
+    - get_last(): Lấy phần tử cuối cùng - O(1)
+    - contains(data): Kiểm tra sự tồn tại của phần tử - O(n)
+    - is_empty(): Kiểm tra danh sách rỗng - O(1)
+    - get_length(): Lấy số lượng phần tử - O(1)
+    - __iter__(): Iterator để duyệt danh sách - O(1)
+    - __len__(): Lấy độ dài danh sách - O(1)
+    """
+    
     def __init__(self, initial_data: Iterable[T] | None = None):
+        """
+        Khởi tạo một danh sách liên kết mới.
+        
+        Tham số:
+            initial_data (Iterable[T] | None): Dữ liệu ban đầu để thêm vào danh sách.
+                                              None nếu khởi tạo danh sách rỗng.
+        """
         self.head: Node[T] | None = None
         self.tail: Node[T] | None = None
         self.length: int = 0
+        
+        # Thêm dữ liệu ban đầu nếu được cung cấp
         if initial_data:
             for item in initial_data:
                 self.append(item)
 
     def append(self, data: T) -> None:
-        "Thêm phần tử vào cuối danh sách. Độ phức tạp: O(1)." 
+        """
+        Thêm phần tử vào cuối danh sách.
+        
+        Tham số:
+            data (T): Dữ liệu cần thêm vào cuối danh sách.
+        """
         new_node = Node(data)
-        if self.head is None: # Trường hợp danh sách rỗng
+        
+        if self.head is None:  # Danh sách rỗng
             self.head = new_node
             self.tail = new_node
         else:
-            # self.tail should always be valid if self.head is not None
+            # Danh sách không rỗng, tail luôn tồn tại
+            assert self.tail is not None
             self.tail.next = new_node
             self.tail = new_node
+            
         self.length += 1
 
     def prepend(self, data: T) -> None:
-        "Thêm phần tử vào đầu danh sách. Độ phức tạp: O(1)."
+        """
+        Thêm phần tử vào đầu danh sách.
+        
+        Tham số:
+            data (T): Dữ liệu cần thêm vào đầu danh sách.
+        """
         new_node = Node(data)
-        if self.head is None: # Trường hợp danh sách rỗng
+        
+        if self.head is None:  # Danh sách rỗng
             self.head = new_node
             self.tail = new_node
         else:
+            # Danh sách không rỗng
             new_node.next = self.head
             self.head = new_node
+            
         self.length += 1
 
     def remove_first(self) -> T:
         """
-        Xóa và trả về phần tử đầu tiên của danh sách. 
-        Độ phức tạp: O(1).
-        Raise IndexError nếu danh sách rỗng.
+        Xóa và trả về phần tử đầu tiên của danh sách.
+        
+        Trả về:
+            T: Phần tử đầu tiên đã được xóa.
+            
+        Ngoại lệ:
+            IndexError: Nếu danh sách rỗng.
         """
         if self.head is None:
-            raise IndexError("Không thể pop từ danh sách rỗng.")
+            raise IndexError("Không thể xóa phần tử từ danh sách rỗng")
         
         removed_data = self.head.data
         
-        if self.head == self.tail:  # Trường hợp chỉ có 1 phần tử
+        if self.head == self.tail:  # Chỉ có một phần tử
             self.head = None
             self.tail = None
         else:
+            # Có nhiều hơn một phần tử
             self.head = self.head.next
         
         self.length -= 1
         return removed_data
     
     def remove_by_value(self, data: T) -> bool:
-        "Xóa phần tử đầu tiên có giá trị `data`. Độ phức tạp: O(N). Trả về True nếu xóa thành công, ngược lại False." 
+        """
+        Xóa phần tử đầu tiên có giá trị bằng data.
+        
+        Tham số:
+            data (T): Giá trị của phần tử cần xóa.
+            
+        Trả về:
+            bool: True nếu xóa thành công, False nếu không tìm thấy.
+        """
         if self.head is None:
             return False
 
+        # Kiểm tra phần tử đầu tiên
         if self.head.data == data:
-            if self.head == self.tail: # Trường hợp chỉ có 1 phần tử
+            if self.head == self.tail:  # Chỉ có một phần tử
                 self.head = None
                 self.tail = None
             else:
@@ -79,118 +149,158 @@ class LinkedList(Generic[T]):
             self.length -= 1
             return True
 
+        # Tìm kiếm trong các phần tử còn lại
         current = self.head
         while current.next and current.next.data != data:
             current = current.next
         
-        if current.next: # Tìm thấy phần tử cần xóa
-            if current.next == self.tail:
-                self.tail = current # Cập nhật tail nếu phần tử bị xóa là tail
-            current.next = current.next.next
+        if current.next:  # Tìm thấy phần tử cần xóa
+            node_to_remove = current.next
+            
+            # Cập nhật tail nếu phần tử bị xóa là phần tử cuối
+            if node_to_remove == self.tail:
+                self.tail = current
+                
+            current.next = node_to_remove.next
             self.length -= 1
             return True
-        return False # Không tìm thấy phần tử có giá trị data
+            
+        return False  # Không tìm thấy phần tử
 
     def remove_at_index(self, index: int) -> T:
-        "Xóa phần tử tại vị trí (index) được chỉ định. Độ phức tạp: O(N). Trả về giá trị của phần tử bị xóa." 
-        if not (0 <= index < self.length):
-            raise IndexError("Chỉ số (index) nằm ngoài phạm vi cho phép.")
+        """
+        Xóa phần tử tại vị trí index được chỉ định.
         
+        Tham số:
+            index (int): Vị trí của phần tử cần xóa.
+            
+        Trả về:
+            T: Phần tử đã được xóa.
+            
+        Ngoại lệ:
+            IndexError: Nếu index nằm ngoài phạm vi [0, length-1].
+        """
+        if not (0 <= index < self.length):
+            raise IndexError("Chỉ số nằm ngoài phạm vi")
+        
+        # Xóa phần tử đầu tiên
         if index == 0:
-            if self.head is None: # Không nên xảy ra nếu length > 0
-                 raise RuntimeError("Lỗi logic: head là None mặc dù length > 0.")
-            removed_data = self.head.data
-            if self.head == self.tail: # Trường hợp chỉ có 1 phần tử
-                self.head = None
-                self.tail = None
-            else:
-                self.head = self.head.next
-            self.length -= 1
-            return removed_data
+            return self.remove_first()
 
+        # Tìm node trước node cần xóa
         current = self.head
         for _ in range(index - 1):
-            if current:
-                current = current.next
-            else: # Không nên xảy ra
-                raise RuntimeError("Lỗi logic khi duyệt LinkedList để xóa theo chỉ số.")
+            assert current is not None  # Không nên xảy ra với index hợp lệ
+            current = current.next
 
-        if current and current.next: # current là nút đứng trước nút cần xóa
-            removed_node = current.next
-            removed_data = removed_node.data
-            if removed_node == self.tail: # Nếu nút bị xóa là tail, cập nhật tail
-                self.tail = current
-            current.next = removed_node.next # Bỏ qua nút bị xóa
-            self.length -= 1
-            return removed_data
-        # Trường hợp này không nên xảy ra nếu index hợp lệ và length > 0
-        raise RuntimeError("Không thể xóa phần tử tại chỉ số (index) đã cho.")
+        # current giờ trỏ tới node trước node cần xóa
+        assert current is not None and current.next is not None
+        node_to_remove = current.next
+        removed_data = node_to_remove.data
+        
+        # Cập nhật tail nếu node bị xóa là tail
+        if node_to_remove == self.tail:
+            self.tail = current
+            
+        current.next = node_to_remove.next
+        self.length -= 1
+        return removed_data
 
     def get_at_index(self, index: int) -> T:
-        "Lấy phần tử tại vị trí (index) được chỉ định. Độ phức tạp: O(N)." 
+        """
+        Lấy phần tử tại vị trí index được chỉ định.
+        
+        Tham số:
+            index (int): Vị trí của phần tử cần lấy.
+            
+        Trả về:
+            T: Phần tử tại vị trí index.
+            
+        Ngoại lệ:
+            IndexError: Nếu index nằm ngoài phạm vi [0, length-1].
+        """
         if not (0 <= index < self.length):
-            raise IndexError("Chỉ số (index) nằm ngoài phạm vi cho phép.")
+            raise IndexError("Chỉ số nằm ngoài phạm vi")
+            
         current = self.head
         for _ in range(index):
-            if current:
-                current = current.next
-            else: # Không nên xảy ra
-                raise RuntimeError("Lỗi logic khi duyệt LinkedList để lấy phần tử theo chỉ số.")
-        if current: 
-            return current.data
-        # Trường hợp này không nên xảy ra nếu index hợp lệ
-        raise RuntimeError("Không thể lấy phần tử tại chỉ số (index) đã cho.")
+            assert current is not None  # Không nên xảy ra với index hợp lệ
+            current = current.next
+            
+        assert current is not None
+        return current.data
 
     def get_node_at_index(self, index: int) -> Node[T] | None:
-        "Lấy nút (Node) tại vị trí (index) được chỉ định. Độ phức tạp: O(N). Trả về None nếu index không hợp lệ." 
+        """
+        Lấy node tại vị trí index được chỉ định.
+        
+        Tham số:
+            index (int): Vị trí của node cần lấy.
+            
+        Trả về:
+            Node[T] | None: Node tại vị trí index, hoặc None nếu index không hợp lệ.
+        """
         if not (0 <= index < self.length):
-            # Có thể raise IndexError thay vì trả về None nếu muốn hành vi nghiêm ngặt hơn
-            return None 
+            return None
+            
         current = self.head
         for _ in range(index):
-            if current:
-                current = current.next
-            else: # Không nên xảy ra nếu logic của các hàm gọi là đúng
-                return None 
+            if current is None:  # Không nên xảy ra với length nhất quán
+                return None
+            current = current.next
+            
         return current
 
     def get_last(self) -> T | None:
-        "Lấy phần tử cuối cùng của danh sách. Độ phức tạp: O(1). Trả về None nếu danh sách rỗng." 
+        """
+        Lấy phần tử cuối cùng của danh sách.
+        
+        Trả về:
+            T | None: Phần tử cuối cùng, hoặc None nếu danh sách rỗng.
+        """
         if self.tail:
             return self.tail.data
         return None
 
     def remove_last(self) -> T | None:
-        "Xóa và trả về phần tử cuối cùng. Độ phức tạp: O(N) trong trường hợp xấu nhất (cần duyệt để tìm tail mới). O(1) nếu chỉ có 1 phần tử." 
-        if self.is_empty():
-            return None # Hoặc có thể raise IndexError("Không thể xóa phần tử cuối từ danh sách rỗng")
+        """
+        Xóa và trả về phần tử cuối cùng của danh sách.
         
-        removed_data: T
-        if self.head == self.tail: # Trường hợp chỉ có một phần tử
-            if self.head is None: # Kiểm tra an toàn, mặc dù is_empty đã check
-                raise RuntimeError("Lỗi logic: head là None trong remove_last dù danh sách được cho là có 1 phần tử.")
+        Trả về:
+            T | None: Phần tử cuối cùng đã xóa, hoặc None nếu danh sách rỗng.
+        """
+        if self.is_empty():
+            return None
+        
+        if self.head == self.tail:  # Chỉ có một phần tử
+            assert self.head is not None
             removed_data = self.head.data
             self.head = None
             self.tail = None
         else:
-            # Duyệt để tìm nút ngay trước tail
+            # Tìm node trước tail
             current = self.head
-            # Kiểm tra current.next tồn tại trước khi truy cập current.next.next
             while current and current.next and current.next != self.tail:
                 current = current.next
             
-            if current and self.tail: # current giờ là nút đứng trước tail
-                removed_data = self.tail.data
-                current.next = None # Bỏ liên kết đến tail cũ
-                self.tail = current # Cập nhật tail mới
-            else: # Không nên xảy ra trong một danh sách nhất quán có độ dài > 1
-                raise RuntimeError("Lỗi logic trong remove_last cho danh sách có nhiều phần tử.")
+            assert current is not None and self.tail is not None
+            removed_data = self.tail.data
+            current.next = None  # Bỏ liên kết đến tail cũ
+            self.tail = current  # Cập nhật tail mới
 
         self.length -= 1
         return removed_data
 
     def contains(self, data: T) -> bool:
-        "Kiểm tra xem một phần tử có tồn tại trong danh sách hay không. Độ phức tạp: O(N)." 
+        """
+        Kiểm tra xem một phần tử có tồn tại trong danh sách hay không.
+        
+        Tham số:
+            data (T): Giá trị cần kiểm tra.
+            
+        Trả về:
+            bool: True nếu phần tử tồn tại, False nếu không.
+        """
         current = self.head
         while current:
             if current.data == data:
@@ -199,33 +309,62 @@ class LinkedList(Generic[T]):
         return False
 
     def is_empty(self) -> bool:
-        "Kiểm tra xem danh sách có rỗng hay không. Độ phức tạp: O(1)." 
+        """
+        Kiểm tra xem danh sách có rỗng hay không.
+        
+        Trả về:
+            bool: True nếu danh sách rỗng, False nếu không.
+        """
         return self.length == 0
 
     def get_length(self) -> int:
-        "Trả về số lượng phần tử trong danh sách. Độ phức tạp: O(1)." 
+        """
+        Lấy số lượng phần tử trong danh sách.
+        
+        Trả về:
+            int: Số lượng phần tử hiện có trong danh sách.
+        """
         return self.length
 
-    def __iter__(self):
-        "Trả về một iterator để duyệt qua các phần tử trong danh sách." 
+    def __iter__(self) -> Iterator[T]:
+        """
+        Trả về iterator để duyệt qua các phần tử trong danh sách.
+        
+        Trả về:
+            Iterator[T]: Iterator cho các phần tử trong danh sách.
+        """
         current = self.head
         while current:
             yield current.data
             current = current.next
 
-    def __str__(self) -> str:
-        "Trả về biểu diễn chuỗi của danh sách liên kết." 
-        items = []
-        current = self.head
-        while current:
-            items.append(str(current.data))
-            current = current.next
-        return " -> ".join(items) if items else "LinkedList()"
-
-    def __repr__(self) -> str:
-        "Trả về biểu diễn chuỗi chính thức của danh sách liên kết, có thể dùng để tạo lại đối tượng." 
-        return f"LinkedList([{', '.join(repr(item) for item in self)}])"
-
     def __len__(self) -> int:
-        "Trả về độ dài của danh sách liên kết, cho phép sử dụng hàm len()." 
+        """
+        Lấy độ dài của danh sách.
+        
+        Trả về:
+            int: Số lượng phần tử trong danh sách.
+        """
         return self.length
+    
+    def get_at(self, index):
+        "Trả về dữ liệu của phần tử tại vị trí (index) được chỉ định trong danh sách."
+        current = self.head
+        for i in range(index):
+            if current is None:
+                raise IndexError("Index out of bounds")
+            current = current.next
+        if current is None:
+            raise IndexError("Index out of bounds")
+        return current.data
+
+    def set_at(self, index: int, value: T) -> None:
+        "Gán giá trị mới cho phần tử tại vị trí (index) được chỉ định trong danh sách."
+        current = self.head
+        for i in range(index):
+            if current is None:
+                raise IndexError("Index out of bounds")  # Vượt quá độ dài danh sách
+            current = current.next
+        if current is None:
+            raise IndexError("Index out of bounds")
+        current.data = value

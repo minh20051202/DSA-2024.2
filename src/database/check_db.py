@@ -1,38 +1,37 @@
 import sqlite3
+import os
 
-# Đường dẫn đến file database (sử dụng raw string)
-db_path = r"C:\Users\Admin\Desktop\2024.2\GTS\Baitap\DSA-2024.2-main\src\database\debt_simplifier.db"
+# Đường dẫn đến file debt_simplifier.db
+# check_db.py đã ở trong src/database, nên chỉ cần trỏ trực tiếp đến debt_simplifier.db
+db_path = os.path.join(os.path.dirname(__file__), "debt_simplifier.db")
 
 try:
-    # Kết nối đến database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    with sqlite3.connect(db_path) as conn:
+        cursor = conn.cursor()
 
-    # Lấy dữ liệu từ bảng giao_dich
-    cursor.execute("SELECT nguoi_no, chu_no, so_tien FROM giao_dich")
-    giao_dich_data = cursor.fetchall()
-    print("Dữ liệu từ bảng giao_dich (Giao dịch gốc):")
-    if giao_dich_data:
-        for row in giao_dich_data:
-            print(f"Người nợ: {row[0]}, Chủ nợ: {row[1]}, Số tiền: {row[2]}")
-    else:
-        print("Không có dữ liệu trong bảng giao_dich.")
+        # Kiểm tra bảng datasets
+        print("=== Bảng Datasets ===")
+        cursor.execute("SELECT * FROM datasets")
+        datasets = cursor.fetchall()
+        if not datasets:
+            print("Không có bộ giao dịch nào.")
+        else:
+            print("ID | Tên | Ngày tạo")
+            print("-" * 30)
+            for dataset in datasets:
+                print(f"{dataset[0]} | {dataset[1]} | {dataset[2]}")
 
-    # Lấy dữ liệu từ bảng giao_dich_toi_uu
-    cursor.execute("SELECT nguoi_no, chu_no, so_tien, phuong_phap FROM giao_dich_toi_uu")
-    giao_dich_toi_uu_data = cursor.fetchall()
-    print("\nDữ liệu từ bảng giao_dich_toi_uu (Giao dịch đã tối ưu):")
-    if giao_dich_toi_uu_data:
-        for row in giao_dich_toi_uu_data:
-            print(f"Người nợ: {row[0]}, Chủ nợ: {row[1]}, Số tiền: {row[2]}, Phương pháp: {row[3]}")
-    else:
-        print("Không có dữ liệu trong bảng giao_dich_toi_uu.")
+        # Kiểm tra bảng transactions
+        print("\n=== Bảng Transactions ===")
+        cursor.execute("SELECT * FROM transactions")
+        transactions = cursor.fetchall()
+        if not transactions:
+            print("Không có giao dịch nào.")
+        else:
+            print("ID | Dataset ID | Type | Debtor | Creditor | Amount | Borrow Date | Due Date | Interest Rate | Penalty Fee | Status")
+            print("-" * 80)
+            for tx in transactions:
+                print(f"{tx[0]} | {tx[1]} | {tx[2]} | {tx[3]} | {tx[4]} | {tx[5]} | {tx[6] or ''} | {tx[7] or ''} | {tx[8] or ''} | {tx[9] or ''} | {tx[10] or ''}")
 
 except sqlite3.Error as e:
-    print(f"Lỗi khi kết nối hoặc truy vấn database: {e}")
-
-finally:
-    # Đóng kết nối
-    if conn:
-        conn.close()
-        print("Đã đóng kết nối database.")
+    print(f"Lỗi khi truy xuất cơ sở dữ liệu: {e}")

@@ -1,5 +1,4 @@
 # Thuật toán Đơn giản hóa Nợ sử dụng Quy hoạch động
-# Dynamic Programming Debt Simplification Algorithm
 from __future__ import annotations
 
 from src.core_types import BasicTransaction
@@ -50,7 +49,7 @@ class DynamicProgrammingSimplifier:
         """
         Khởi tạo bộ đơn giản hóa nợ dựa trên DP với các giao dịch đầu vào.
         
-        Args:
+        Tham số:
             transactions: Danh sách liên kết các giao dịch cơ bản cần được đơn giản hóa
         """
         self.initial_transactions: LinkedList[BasicTransaction] = transactions
@@ -111,10 +110,10 @@ class DynamicProgrammingSimplifier:
         Thứ tự Tuple được đảm bảo bởi self.all_people_nodes (đã được sắp xếp trước).
         Điều này đảm bảo biểu diễn trạng thái nhất quán qua các lần gọi đệ quy.
         
-        Args:
+        Tham số:
             current_balances: Bảng băm ánh xạ tên người với số dư của họ
             
-        Returns:
+        Trả về:
             Tuple: Các giá trị số dư được sắp xếp thứ tự phù hợp làm khóa bảng DP
         """
         # Sử dụng Array thay vì list Python built-in
@@ -134,10 +133,10 @@ class DynamicProgrammingSimplifier:
         Điều này rất quan trọng để duy trì sự cô lập trạng thái trong quá trình khám phá đệ quy,
         đảm bảo rằng các thay đổi số dư trong một nhánh không ảnh hưởng đến các nhánh khác.
         
-        Args:
+        Tham số:
             source_balances: Ánh xạ số dư gốc cần sao chép
             
-        Returns:
+        Trả về:
             HashTable[str, float]: Bản sao sâu của số dư nguồn
         """
         copied_balances = HashTable[str, float]()
@@ -164,10 +163,10 @@ class DynamicProgrammingSimplifier:
         Phương pháp tham lam ở mỗi bước DP giúp giảm không gian tìm kiếm trong khi
         duy trì tính tối ưu thông qua việc khám phá toàn diện tất cả các đường dẫn có thể.
         
-        Args:
+        Tham số:
             current_balances_map: Trạng thái số dư hiện tại cho tất cả người tham gia
             
-        Returns:
+        Trả về:
             Tuple chứa:
                 1. LinkedList[BasicTransaction]: các giao dịch được tạo trong bước này
                 2. Tuple[float, int]: (chi_phí_tài_chính_bước_này, số_giao_dịch_bước_này)
@@ -269,10 +268,10 @@ class DynamicProgrammingSimplifier:
         Thuật toán đảm bảo tính tối ưu bằng cách khám phá tất cả các chuỗi
         thanh toán có thể và chọn ra chuỗi có chi phí/giao dịch tối thiểu.
         
-        Args:
+        Tham số:
             current_balances_map: Trạng thái số dư hiện tại cho tất cả người tham gia
             
-        Returns:
+        Trả về:
             DPValueTuple: (tổng_chi_phí, tổng_giao_dịch, danh_sách_giao_dịch) cho giải pháp tối ưu
         """
 
@@ -374,7 +373,7 @@ class DynamicProgrammingSimplifier:
         Thuật toán đảm bảo tìm ra giải pháp tối ưu toàn cục để
         tối thiểu hóa cả số lượng giao dịch và tổng chi phí tài chính.
         
-        Returns:
+        Trả về:
             LinkedList[BasicTransaction]: Danh sách giao dịch được đơn giản hóa tối ưu
         """
         # Xử lý trường hợp biên: không có giao dịch đầu vào
