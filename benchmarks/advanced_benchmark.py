@@ -14,7 +14,7 @@ from tabulate import tabulate
 from datetime import date, timedelta
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.core_types import AdvancedTransaction, BasicTransaction
+from src.core_type import AdvancedTransaction, BasicTransaction
 from src.data_structures import LinkedList, Tuple
 from src.utils.financial_calculator import InterestType, PenaltyType
 from src.utils.constants import EPSILON

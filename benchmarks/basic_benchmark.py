@@ -14,7 +14,7 @@ import tracemalloc
 from statistics import mean, stdev
 from tabulate import tabulate
 
-from src.core_types import BasicTransaction
+from src.core_type import BasicTransaction
 from src.data_structures import LinkedList
 from src.algorithms.basic_transactions.greedy import GreedySimplifier
 from src.algorithms.basic_transactions.dynamic_programming import DynamicProgrammingSimplifier
