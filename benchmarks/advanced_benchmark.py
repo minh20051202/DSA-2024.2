@@ -9,7 +9,7 @@ import os, sys
 import time
 import random
 import tracemalloc
-from statistics import mean, stdev # Thêm stdev
+from statistics import mean, stdev
 from tabulate import tabulate
 from datetime import date, timedelta
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
