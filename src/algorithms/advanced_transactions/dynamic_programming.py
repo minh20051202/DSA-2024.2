@@ -595,7 +595,6 @@ class AdvancedDynamicProgrammingSimplifier:
                 continue
 
             overdue_days_for_this_tx = 0.0
-            # Ưu tiên sử dụng phương thức days_overdue nếu có
             if hasattr(adv_tx, 'days_overdue') and callable(getattr(adv_tx, 'days_overdue')):
                  overdue_days_for_this_tx = float(adv_tx.days_overdue(self.current_date))
             elif hasattr(adv_tx, 'due_date') and hasattr(adv_tx, 'borrow_date'): # Fallback
