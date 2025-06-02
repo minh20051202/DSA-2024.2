@@ -233,21 +233,19 @@ class AdvancedDynamicProgrammingSimplifier:
         hoạt động trên các bản sao độc lập của trạng thái số dư.
         """
         copied_balances = HashTable[str, float]()
-        # Giả sử HashTable có các thuộc tính capacity và load_factor_threshold hoặc có constructor mặc định phù hợp
+        
         if hasattr(source_balances, 'capacity') and hasattr(source_balances, 'load_factor_threshold'):
             copied_balances = HashTable[str, float](capacity=source_balances.capacity,
                                                 load_factor_threshold=source_balances.load_factor_threshold)
         
-        # Giả sử HashTable có thể lặp qua các khóa của nó
+      
         for key in source_balances:
             value = source_balances.get(key)
             if value is not None: # Kiểm tra an toàn
                  copied_balances.put(key, value)
         return copied_balances
 
-    def _find_priority_based_settlements(
-        self, current_balances_map: HashTable[str, float]
-    ) -> Tuple: # pragma: no cover
+    def _find_priority_based_settlements(self, current_balances_map: HashTable[str, float]) -> Tuple: 
         """
         (Hàm này không được sử dụng trong logic DP chính hiện tại, có thể dùng cho các chiến lược khác hoặc phân tích).
         Tìm kiếm các giải pháp thanh toán dựa trên độ ưu tiên của người nợ và người cho vay.
@@ -264,7 +262,6 @@ class AdvancedDynamicProgrammingSimplifier:
             return t1_tuple[2] > t2_tuple[2] # Ưu tiên điểm ưu tiên trung bình cao hơn (index 2)
 
         def creditor_comparator(t1_tuple: Tuple, t2_tuple: Tuple) -> bool:
-            # Heuristic ví dụ: ưu tiên người cho vay có giá trị hiệu dụng cao hơn
             norm_p_score = max(1.0, self.total_priority_score if self.total_priority_score > 0 else 1.0)
             eff1 = t1_tuple[1] * (1 + t1_tuple[2] / norm_p_score) # balance (idx 1), priority (idx 2)
             eff2 = t2_tuple[1] * (1 + t2_tuple[2] / norm_p_score)
@@ -333,9 +330,9 @@ class AdvancedDynamicProgrammingSimplifier:
         while current_detail_node:
             entry_ht = current_detail_node.data # Đây là một HashTable chứa "priority_score"
             if entry_ht is not None:
-                 priority_val = entry_ht.get("priority_score") # Lấy giá trị
-                 if priority_val is not None: # Kiểm tra None trước khi cộng
-                    total_priority_sum += float(priority_val) # Đảm bảo là float
+                 priority_val = entry_ht.get("priority_score")
+                 if priority_val is not None:
+                    total_priority_sum += float(priority_val) 
                  count += 1
             current_detail_node = current_detail_node.next
             
@@ -394,7 +391,6 @@ class AdvancedDynamicProgrammingSimplifier:
                     elif bal > EPSILON: # Người cho vay có số dư dương
                         creditors.append(value=name)
                 current_name_node_iter = current_name_node_iter.next
-        # Không nên có fallback phức tạp ở đây; self.all_people_nodes phải được khởi tạo đúng.
 
         # Khởi tạo các biến để theo dõi giải pháp tốt nhất cho trạng thái hiện tại
         best_current_cost = float("inf")

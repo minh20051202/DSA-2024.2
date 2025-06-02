@@ -66,10 +66,10 @@ class DebtSimplifierGUI:
         self.advanced_only_extra_columns_config = {
             "Ngày vay": {"text": "Ngày vay", "width": 100, "anchor": tk.W, "minwidth": 90},
             "Ngày đến hạn": {"text": "Ngày đến hạn", "width": 100, "anchor": tk.W, "minwidth": 90},
-            "Lãi suất (%)": {"text": "Lãi suất (%)", "width": 90, "anchor": tk.W, "minwidth": 80}, # Đổi tên hiển thị
-            "Kiểu lãi": {"text": "Kiểu lãi", "width": 110, "anchor": tk.W, "minwidth": 100},       # CỘT MỚI
-            "Phí phạt": {"text": "Phí phạt (%)", "width": 90, "anchor": tk.W, "minwidth": 80},
-            "Kiểu phạt": {"text": "Kiểu phạt", "width": 110, "anchor": tk.W, "minwidth": 100}      # CỘT MỚI
+            "Lãi suất (%)": {"text": "Lãi suất (%)", "width": 90, "anchor": tk.W, "minwidth": 80},
+            "Kiểu lãi": {"text": "Kiểu lãi", "width": 110, "anchor": tk.W, "minwidth": 100},       
+            "Phí phạt": {"text": "Phí phạt", "width": 90, "anchor": tk.W, "minwidth": 80},
+            "Kiểu phạt": {"text": "Kiểu phạt", "width": 110, "anchor": tk.W, "minwidth": 100}     
         }
         self.type_column_config = {
             "Loại GD": {"text": "Loại GD", "width": 80, "anchor": tk.W, "minwidth": 70}
@@ -115,7 +115,6 @@ class DebtSimplifierGUI:
                         FOREIGN KEY (dataset_id) REFERENCES datasets (id)
                     )
                 ''')
-                # Kiểm tra và thêm cột nếu chưa có (cho các DB cũ)
                 self.add_column_if_not_exists(cursor, "transactions", "interest_type_name", "TEXT")
                 self.add_column_if_not_exists(cursor, "transactions", "penalty_type_name", "TEXT")
 
@@ -181,8 +180,8 @@ class DebtSimplifierGUI:
             ("Số tiền", 20),
             ("Ngày vay (dd/mm/yyyy)", 20), 
             ("Ngày đến hạn (dd/mm/yyyy)", 20),
-            ("Lãi suất (%)", 10), # Key này cần khớp với config cột
-            ("Phí phạt (%)", 10)      # Key này cần khớp với config cột
+            ("Lãi suất (%)", 10),
+            ("Phí phạt", 10)      
         ]
         current_entry_row = 0 
         for i, (label_text, width) in enumerate(labels_entries):
@@ -199,7 +198,6 @@ class DebtSimplifierGUI:
         
         dropdown_display_row = current_entry_row + 1 
 
-        # --- KIỂU PHÍ PHẠT (bên trái) ---
         lbl_penalty_type = ttk.Label(input_frame, text="Kiểu phí phạt:")
         # Label ở cột 0, dòng dropdown_display_row
         lbl_penalty_type.grid(row=dropdown_display_row, column=0, padx=5, pady=3, sticky="w") 
@@ -211,8 +209,6 @@ class DebtSimplifierGUI:
         combo_penalty_type.grid(row=dropdown_display_row, column=1, padx=5, pady=3, sticky="ew") 
         self.dropdown_widgets['penalty_type'] = (lbl_penalty_type, combo_penalty_type)
 
-
-        # --- KIỂU LÃI SUẤT (bên phải) ---
         lbl_interest_type = ttk.Label(input_frame, text="Kiểu lãi suất:")
         # Label ở cột 2, dòng dropdown_display_row
         lbl_interest_type.grid(row=dropdown_display_row, column=2, padx=5, pady=3, sticky="w") 
@@ -359,7 +355,7 @@ class DebtSimplifierGUI:
             "Ngày vay (dd/mm/yyyy)",
             "Ngày đến hạn (dd/mm/yyyy)",
             "Lãi suất (%)",
-            "Phí phạt (%)"
+            "Phí phạt"
         ]
 
         # a) Nếu ở Chế độ Cơ bản, ẩn các:
@@ -654,7 +650,7 @@ class DebtSimplifierGUI:
                 borrow_date_str = self.input_widgets["Ngày vay (dd/mm/yyyy)"][1].get().strip()
                 due_date_str    = self.input_widgets["Ngày đến hạn (dd/mm/yyyy)"][1].get().strip()
                 interest_str    = self.input_widgets["Lãi suất (%)"][1].get().strip()
-                penalty_str     = self.input_widgets["Phí phạt (%)"][1].get().strip() 
+                penalty_str     = self.input_widgets["Phí phạt"][1].get().strip() 
 
                 if not borrow_date_str or not due_date_str:
                     raise ValueError("Ngày vay và ngày đến hạn không được để trống.")
@@ -828,7 +824,7 @@ class DebtSimplifierGUI:
             interest_entry.insert(0, str(tx.interest_rate * 100))
             interest_entry.grid(row=current_row, column=1, sticky="ew", padx=5, pady=5); current_row += 1
 
-            ttk.Label(form_frame, text="Phí phạt (%):").grid(row=current_row, column=0, sticky="e", padx=5, pady=5) # Thêm (%) vào label
+            ttk.Label(form_frame, text="Phí phạt:").grid(row=current_row, column=0, sticky="e", padx=5, pady=5) # Thêm (%) vào label
             penalty_entry = ttk.Entry(form_frame)
             
             initial_penalty_display_val = tx.penalty_rate # Sử dụng tx.penalty_rate
@@ -876,8 +872,8 @@ class DebtSimplifierGUI:
 
                     borrow_date_str = borrow_date_entry.get().strip()
                     due_date_str = due_date_entry.get().strip()
-                    interest_rate_percent_str = interest_entry.get().strip() # Đây là % (ví dụ "5" cho 5%)
-                    penalty_value_str = penalty_entry.get().strip() # Đây là giá trị từ ô "Phí phạt (%)"
+                    interest_rate_percent_str = interest_entry.get().strip() 
+                    penalty_value_str = penalty_entry.get().strip() 
 
                     if not all([borrow_date_str, due_date_str, interest_rate_percent_str, penalty_value_str]):
                          raise ValueError("Tất cả các trường nâng cao (ngày, lãi suất, phí phạt) phải được điền.")
@@ -886,7 +882,7 @@ class DebtSimplifierGUI:
                     due_date = datetime.strptime(due_date_str, "%d/%m/%Y").date()
                     if due_date < borrow_date: raise ValueError("Ngày đến hạn phải sau ngày vay.")
                     
-                    interest_rate_decimal = float(interest_rate_percent_str) / 100.0 # Chuyển % sang thập phân
+                    interest_rate_decimal = float(interest_rate_percent_str) / 100.0 
 
                     # Lấy kiểu lãi và kiểu phạt từ combobox
                     new_interest_label = edit_interest_type_combo.get()

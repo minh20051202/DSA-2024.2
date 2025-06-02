@@ -140,7 +140,7 @@ class AdvancedDebtCycleSimplifier:
             if not person_to_advanced_map.contains_key(key):
                 person_to_advanced_map.put(key, Array[AdvancedTransaction]())
             array_of_tx = person_to_advanced_map.get(key)
-            if array_of_tx is not None: # Kiểm tra an toàn
+            if array_of_tx is not None:
                 array_of_tx.append(value=tx)
             priority_scores[key] = priority
 
@@ -156,7 +156,7 @@ class AdvancedDebtCycleSimplifier:
     def _convert_back_to_advanced_transactions(
         self,
         basic_transactions: LinkedList[BasicTransaction],
-        person_map: HashTable[str, Array[AdvancedTransaction]] # person_map chứa các AdvancedTransaction GỐC
+        person_map: HashTable[str, Array[AdvancedTransaction]]
     ) -> LinkedList[AdvancedTransaction]:
         result: LinkedList[AdvancedTransaction] = LinkedList()
 
@@ -169,8 +169,8 @@ class AdvancedDebtCycleSimplifier:
 
             final_borrow_date = self.current_date
             final_due_date = self.current_date
-            final_interest_type = InterestType.SIMPLE # Ví dụ
-            final_penalty_type = PenaltyType.FIXED   # Ví dụ
+            final_interest_type = InterestType.SIMPLE 
+            final_penalty_type = PenaltyType.FIXED   
 
             if original_advanced_tx_list_for_pair is not None and len(original_advanced_tx_list_for_pair):
                 template: AdvancedTransaction = original_advanced_tx_list_for_pair.get(0)
@@ -179,18 +179,17 @@ class AdvancedDebtCycleSimplifier:
 
             final_amount_for_advanced = round_money(basic_tx.amount)
 
-            if final_amount_for_advanced > EPSILON: # Chỉ tạo nếu số tiền có ý nghĩa
+            if final_amount_for_advanced > EPSILON: 
                 new_advanced = AdvancedTransaction(
                     debtor=basic_tx.debtor,
                     creditor=basic_tx.creditor,
                     amount=final_amount_for_advanced,
-                    borrow_date=final_borrow_date, # Luôn là current_date cho giao dịch đã chốt sổ
-                    due_date=final_due_date,       # Luôn là current_date
-                    interest_rate=0.0,             # Không có lãi/phạt cho giao dịch đã chốt sổ
+                    borrow_date=final_borrow_date, 
+                    due_date=final_due_date,       
+                    interest_rate=0.0,             
                     penalty_rate=0.0,
-                    interest_type=final_interest_type, # Loại đã xác định (từ template hoặc mặc định)
-                    penalty_type=final_penalty_type    # Loại đã xác định
-                )
+                    interest_type=final_interest_type,
+                    penalty_type=final_penalty_type)    
                 result.append(new_advanced)
             node = node.next
         return result
